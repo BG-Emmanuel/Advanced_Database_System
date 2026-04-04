@@ -1,0 +1,9 @@
+# Base de données
+psql -d buy237_db -f backend/schema.sql
+
+# Backend
+cd backend && cp .env.example .env  # Configurer DB + JWT
+npm install && npm run dev           # Port 5000
+
+# Frontend
+cd frontend && npm install && npm start  # Port 3000
