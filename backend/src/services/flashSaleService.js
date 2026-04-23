@@ -1,4 +1,4 @@
-const pool = require('../db/connection');
+const { pool } = require('../db');
 
 async function createFlashSale(productId, salePrice, startTime, endTime, maxQuantity) {
   const result = await pool.query(

@@ -1,4 +1,4 @@
-const pool = require('../db/connection');
+const { pool } = require('../db');
 
 async function addToWishlist(userId, productId) {
   const result = await pool.query(

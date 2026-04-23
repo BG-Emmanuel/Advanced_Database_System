@@ -1,4 +1,4 @@
-const pool = require('../db/connection');
+const { pool } = require('../db');
 
 async function getOrderStatus(orderId) {
   const result = await pool.query(

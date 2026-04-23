@@ -1,4 +1,4 @@
-const pool = require('../db/connection');
+const { pool } = require('../db');
 
 async function createCoupon(code, discountPercent, maxUses, expiresAt) {
   const result = await pool.query(

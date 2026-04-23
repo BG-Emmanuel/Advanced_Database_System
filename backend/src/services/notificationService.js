@@ -1,4 +1,4 @@
-const pool = require('../db/connection');
+const { pool } = require('../db');
 
 async function createNotification(userId, title, message, type = 'info') {
   const result = await pool.query(
