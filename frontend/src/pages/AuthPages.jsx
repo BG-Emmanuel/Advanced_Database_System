@@ -29,41 +29,28 @@ function GoogleAuthButton({ onCredential, disabled }) {
 
   React.useEffect(() => {
     const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-    if (!clientId) {
-      setError('Google sign-in is not configured.');
-      return;
-    }
-
+    if (!clientId) { setError('Google sign-in is not configured.'); return; }
     let active = true;
     loadGoogleScript()
       .then(() => {
         if (!active || !ref.current || !window.google?.accounts?.id) return;
         window.google.accounts.id.initialize({
           client_id: clientId,
-          callback: (response) => {
-            if (response?.credential) onCredential(response.credential);
-          },
+          callback: (response) => { if (response?.credential) onCredential(response.credential); },
         });
         if (ref.current) {
-          // Safe DOM manipulation (SECURITY FIX: was using innerHTML = '')
           while (ref.current.firstChild) ref.current.removeChild(ref.current.firstChild);
         }
         window.google.accounts.id.renderButton(ref.current, {
-          type: 'standard',
-          shape: 'pill',
-          theme: 'outline',
-          text: 'continue_with',
-          size: 'large',
-          width: 340,
+          type: 'standard', shape: 'pill', theme: 'outline',
+          text: 'continue_with', size: 'large', width: 340,
         });
       })
       .catch(() => setError('Unable to load Google sign-in.'));
-
     return () => { active = false; };
   }, [onCredential]);
 
   if (error) return <div style={{ fontSize:'.8rem', color:'var(--text-muted)', textAlign:'center' }}>{error}</div>;
-
   return (
     <div style={{ opacity: disabled ? 0.6 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
       <div ref={ref} style={{ display:'flex', justifyContent:'center' }}/>
@@ -77,12 +64,26 @@ const AuthShell = ({ children, title, subtitle }) => (
       <Link to="/" style={{ display:'flex', alignItems:'center', justifyContent:'center', marginBottom:20, textDecoration:'none' }}>
         <span style={{ fontFamily:'var(--font-main)', fontSize:'1.6rem', fontWeight:800, color:'white', background:'var(--green)', padding:'4px 8px', borderRadius:6 }}>Buy</span>
         <span style={{ fontFamily:'var(--font-main)', fontSize:'1.6rem', fontWeight:800, color:'var(--orange)', marginLeft:2 }}>237</span>
-        <span style={{ fontSize:'1.2rem', marginLeft:4 }}>🇨🇲</span>
+        <span style={{ fontSize:'1.2rem', marginLeft:4 }}>????</span>
       </Link>
       <h1 style={{ fontSize:'1.3rem', textAlign:'center', marginBottom:6 }}>{title}</h1>
       <p style={{ textAlign:'center', color:'var(--text-muted)', fontSize:'.88rem', marginBottom:24 }}>{subtitle}</p>
       {children}
     </div>
+  </div>
+);
+
+const FormField = ({ name, label, type='text', placeholder, required=true, value, onChange, error }) => (
+  <div className="form-group">
+    <label className="form-label">{label}{required ? ' *' : ''}</label>
+    <input
+      className={`form-control ${error ? 'error' : ''}`}
+      type={type}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+    />
+    {error && <div className="form-error">{error}</div>}
   </div>
 );
 
@@ -108,22 +109,19 @@ export function LoginPage() {
   };
 
   const handleGoogle = async (credential) => {
-    setError('');
-    setLoading(true);
+    setError(''); setLoading(true);
     try {
       await loginWithGoogle(credential);
       showNotification({ type:'success', message:'Logged in with Google' });
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.message || 'Google login failed');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   return (
     <AuthShell title="Welcome Back" subtitle="Login to your Buy237 account">
-      {error && <div style={{ background:'var(--red-light)', border:'1px solid var(--red)', borderRadius:'var(--radius-sm)', padding:'10px 14px', fontSize:'.85rem', color:'var(--red)', marginBottom:16 }}>❌ {error}</div>}
+      {error && <div style={{ background:'var(--red-light)', border:'1px solid var(--red)', borderRadius:'var(--radius-sm)', padding:'10px 14px', fontSize:'.85rem', color:'var(--red)', marginBottom:16 }}>? {error}</div>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label className="form-label">Email Address</label>
@@ -138,7 +136,7 @@ export function LoginPage() {
               style={{ paddingRight:44 }} autoComplete="current-password"/>
             <button type="button" onClick={() => setShowPw(!showPw)}
               style={{ position:'absolute', right:12, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', fontSize:'1rem' }}>
-              {showPw ? '🙈' : '👁️'}
+              {showPw ? '??' : '???'}
             </button>
           </div>
         </div>
@@ -159,7 +157,7 @@ export function LoginPage() {
         Don't have an account? <Link to="/register" style={{ color:'var(--green)', fontWeight:600 }}>Sign up free</Link>
       </div>
       <div style={{ marginTop:14, background:'var(--bg)', borderRadius:'var(--radius-sm)', padding:12, textAlign:'center', fontSize:'.82rem', color:'var(--text-secondary)' }}>
-        🔒 Safe & Secure • Your data is protected
+        ?? Safe & Secure � Your data is protected
       </div>
     </AuthShell>
   );
@@ -174,10 +172,10 @@ export function RegisterPage() {
 
   const validate = () => {
     const e = {};
-    if (!form.full_name.trim())       e.full_name = 'Name is required';
-    if (!form.email.includes('@'))    e.email     = 'Valid email required';
-    if (form.password.length < 6)    e.password  = 'Password must be at least 6 characters';
-    if (form.password !== form.confirm) e.confirm = 'Passwords do not match';
+    if (!form.full_name.trim())         e.full_name = 'Name is required';
+    if (!form.email.includes('@'))      e.email     = 'Valid email required';
+    if (form.password.length < 6)      e.password  = 'Password must be at least 6 characters';
+    if (form.password !== form.confirm) e.confirm   = 'Passwords do not match';
     return e;
   };
 
@@ -189,7 +187,7 @@ export function RegisterPage() {
     try {
       await authAPI.register({ full_name:form.full_name, email:form.email, phone:form.phone||undefined, password:form.password, preferred_language:form.preferred_language });
       await login(form.email, form.password);
-      showNotification({ type:'success', message:'Account created! Welcome to Buy237 🎉' });
+      showNotification({ type:'success', message:'Account created! Welcome to Buy237 ??' });
       navigate('/');
     } catch (err) {
       setErrors({ general: err.message || 'Registration failed' });
@@ -197,42 +195,35 @@ export function RegisterPage() {
   };
 
   const handleGoogle = async (credential) => {
-    setErrors({});
-    setLoading(true);
+    setErrors({}); setLoading(true);
     try {
       await loginWithGoogle(credential);
-      showNotification({ type:'success', message:'Google account linked successfully 🎉' });
+      showNotification({ type:'success', message:'Google account linked successfully ??' });
       navigate('/');
     } catch (err) {
       setErrors({ general: err.message || 'Google sign-up failed' });
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
-
-  const F = ({ name, label, type='text', placeholder, required=true }) => (
-    <div className="form-group">
-      <label className="form-label">{label}{required ? ' *' : ''}</label>
-      <input className={`form-control ${errors[name] ? 'error' : ''}`} type={type}
-        value={form[name]} onChange={e => setForm(p => ({ ...p, [name]:e.target.value }))} placeholder={placeholder}/>
-      {errors[name] && <div className="form-error">{errors[name]}</div>}
-    </div>
-  );
 
   return (
     <AuthShell title="Create Account" subtitle="Join millions of shoppers on Buy237">
-      {errors.general && <div style={{ background:'var(--red-light)', border:'1px solid var(--red)', borderRadius:'var(--radius-sm)', padding:'10px 14px', fontSize:'.85rem', color:'var(--red)', marginBottom:16 }}>❌ {errors.general}</div>}
+      {errors.general && <div style={{ background:'var(--red-light)', border:'1px solid var(--red)', borderRadius:'var(--radius-sm)', padding:'10px 14px', fontSize:'.85rem', color:'var(--red)', marginBottom:16 }}>? {errors.general}</div>}
       <form onSubmit={handleSubmit}>
-        <F name="full_name" label="Full Name"         placeholder="Jean Paul Atangana"/>
-        <F name="email"     label="Email"             type="email"    placeholder="you@example.com"/>
-        <F name="phone"     label="Phone Number"      type="tel"      placeholder="+237 6XX XXX XXX" required={false}/>
-        <F name="password"  label="Password"          type="password" placeholder="At least 6 characters"/>
-        <F name="confirm"   label="Confirm Password"  type="password" placeholder="Repeat your password"/>
+        <FormField name="full_name" label="Full Name" placeholder="Jean Paul Atangana"
+          value={form.full_name} onChange={e => setForm(p => ({ ...p, full_name:e.target.value }))} error={errors.full_name}/>
+        <FormField name="email" label="Email" type="email" placeholder="you@example.com"
+          value={form.email} onChange={e => setForm(p => ({ ...p, email:e.target.value }))} error={errors.email}/>
+        <FormField name="phone" label="Phone Number" type="tel" placeholder="+237 6XX XXX XXX" required={false}
+          value={form.phone} onChange={e => setForm(p => ({ ...p, phone:e.target.value }))} error={errors.phone}/>
+        <FormField name="password" label="Password" type="password" placeholder="At least 6 characters"
+          value={form.password} onChange={e => setForm(p => ({ ...p, password:e.target.value }))} error={errors.password}/>
+        <FormField name="confirm" label="Confirm Password" type="password" placeholder="Repeat your password"
+          value={form.confirm} onChange={e => setForm(p => ({ ...p, confirm:e.target.value }))} error={errors.confirm}/>
         <div className="form-group">
           <label className="form-label">Preferred Language</label>
           <select className="form-control" value={form.preferred_language} onChange={e => setForm(p => ({ ...p, preferred_language:e.target.value }))}>
             <option value="en">English</option>
-            <option value="fr">Français</option>
+            <option value="fr">Fran�ais</option>
           </select>
         </div>
         <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={loading}>
@@ -267,7 +258,7 @@ export function ForgotPasswordPage() {
       const data = await authAPI.forgotPassword({ email });
       setSent(true);
       if (data.dev_reset_token) setDevToken(data.dev_reset_token);
-    } catch { setSent(true); /* always show success */ }
+    } catch { setSent(true); }
     finally { setLoading(false); }
   };
 
@@ -286,21 +277,21 @@ export function ForgotPasswordPage() {
         </form>
       ) : (
         <div style={{ textAlign:'center', padding:'16px 0' }}>
-          <div style={{ fontSize:'3rem', marginBottom:12 }}>📧</div>
+          <div style={{ fontSize:'3rem', marginBottom:12 }}>??</div>
           <h3 style={{ marginBottom:8 }}>Check your email</h3>
           <p style={{ color:'var(--text-muted)', fontSize:'.88rem', marginBottom:16 }}>
             If an account exists for <strong>{email}</strong>, we've sent a password reset link.
           </p>
           {devToken && (
             <div style={{ background:'#FFF8E1', border:'1px solid #FFC72C', borderRadius:'var(--radius-sm)', padding:12, fontSize:'.78rem', textAlign:'left', marginBottom:16 }}>
-              <strong>🛠 Dev Mode Token:</strong>
+              <strong>?? Dev Mode Token:</strong>
               <div style={{ wordBreak:'break-all', marginTop:4, fontFamily:'monospace', fontSize:'.72rem' }}>{devToken}</div>
             </div>
           )}
         </div>
       )}
       <div style={{ marginTop:20, textAlign:'center', fontSize:'.85rem', color:'var(--text-muted)' }}>
-        <Link to="/login" style={{ color:'var(--green)', fontWeight:600 }}>← Back to Login</Link>
+        <Link to="/login" style={{ color:'var(--green)', fontWeight:600 }}>? Back to Login</Link>
       </div>
     </AuthShell>
   );
