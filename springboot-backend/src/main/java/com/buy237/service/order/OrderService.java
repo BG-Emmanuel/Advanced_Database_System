@@ -6,7 +6,6 @@ import com.buy237.repository.order.OrderRepository;
 import com.buy237.repository.order.OrderItemRepository;
 import com.buy237.dto.order.OrderRequest;
 import com.buy237.dto.order.OrderResponse;
-import com.buy237.dto.order.OrderItemRequest;
 import com.buy237.dto.order.OrderItemResponse;
 import com.buy237.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +28,18 @@ public class OrderService {
                 .status("PENDING")
                 .createdAt(LocalDateTime.now())
                 .build();
-        order = orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
         List<OrderItem> items = request.getItems().stream().map(itemReq -> {
             OrderItem item = OrderItem.builder()
-                    .order(order)
+                .order(savedOrder)
                     .productId(itemReq.getProductId())
                     .quantity(itemReq.getQuantity())
                     .price(itemReq.getPrice())
                     .build();
             return orderItemRepository.save(item);
         }).collect(Collectors.toList());
-        order.setItems(items);
-        return toOrderResponse(order);
+        savedOrder.setItems(items);
+        return toOrderResponse(savedOrder);
     }
 
     public List<OrderResponse> getOrdersByUser(Long userId) {

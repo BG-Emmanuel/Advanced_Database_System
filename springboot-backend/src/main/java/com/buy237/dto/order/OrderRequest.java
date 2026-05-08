@@ -5,13 +5,13 @@ import java.util.List;
 
 @Data
 public class OrderRequest {
-    private List<OrderItemRequest> items;
+    private List<OrderRequest.OrderItemRequest> items;
     private Double totalAmount;
-}
 
-@Data
-class OrderItemRequest {
-    private Long productId;
-    private Integer quantity;
-    private Double price;
+    @Data
+    public static class OrderItemRequest {
+        private Long productId;
+        private Integer quantity;
+        private Double price;
+    }
 }

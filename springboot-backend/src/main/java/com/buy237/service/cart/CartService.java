@@ -6,7 +6,6 @@ import com.buy237.repository.cart.CartRepository;
 import com.buy237.repository.cart.CartItemRepository;
 import com.buy237.dto.cart.CartRequest;
 import com.buy237.dto.cart.CartResponse;
-import com.buy237.dto.cart.CartItemRequest;
 import com.buy237.dto.cart.CartItemResponse;
 import com.buy237.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

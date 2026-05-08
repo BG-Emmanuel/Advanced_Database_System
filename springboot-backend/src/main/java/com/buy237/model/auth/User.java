@@ -26,5 +26,6 @@ public class User {
     @Column(nullable = false)
     private String name;
 
+    @Builder.Default
     private boolean enabled = true;
 }

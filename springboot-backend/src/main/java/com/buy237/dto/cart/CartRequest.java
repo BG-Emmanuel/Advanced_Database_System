@@ -5,11 +5,11 @@ import java.util.List;
 
 @Data
 public class CartRequest {
-    private List<CartItemRequest> items;
-}
+    private List<CartRequest.CartItemRequest> items;
 
-@Data
-class CartItemRequest {
-    private Long productId;
-    private Integer quantity;
+    @Data
+    public static class CartItemRequest {
+        private Long productId;
+        private Integer quantity;
+    }
 }

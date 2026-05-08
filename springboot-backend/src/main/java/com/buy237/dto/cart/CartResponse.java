@@ -9,9 +9,3 @@ public class CartResponse {
     private Long userId;
     private List<CartItemResponse> items;
 }
-
-@Data
-class CartItemResponse {
-    private Long productId;
-    private Integer quantity;
-}

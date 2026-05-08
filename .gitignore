@@ -4,3 +4,7 @@ backend/node_modules/
 backend/.env
 frontend/.env
 .env
+springboot-backend/target/
+frontend/test-results/
+frontend/playwright-report/
+frontend/.cache/

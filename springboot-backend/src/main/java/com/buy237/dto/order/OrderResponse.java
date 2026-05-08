@@ -13,10 +13,3 @@ public class OrderResponse {
     private LocalDateTime createdAt;
     private List<OrderItemResponse> items;
 }
-
-@Data
-class OrderItemResponse {
-    private Long productId;
-    private Integer quantity;
-    private Double price;
-}
